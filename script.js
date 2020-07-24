@@ -1,3 +1,8 @@
+const buttons = Array.from(document.querySelectorAll("th"));
+buttons.forEach(button => button.addEventListener('click', (e) => {
+    console.log(e.target.textContent);
+}));
+
 function add(number1, number2) {
     return number1 + number2;
 }

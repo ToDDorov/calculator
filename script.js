@@ -1,7 +1,21 @@
+let currentScreenValue = "";
+
 const buttons = Array.from(document.querySelectorAll("th"));
 buttons.forEach(button => button.addEventListener('click', (e) => {
-    console.log(e.target.textContent);
+    let textContent = e.target.textContent;
+
+    if (e.target.id != "screen" && parseInt(textContent) < 10 && parseInt(textContent) > -1) {
+        currentScreenValue += textContent;
+
+        this.updateScreen();
+    }
 }));
+
+function updateScreen() {
+    const screen = document.getElementById("screen");
+
+    screen.textContent = currentScreenValue;
+}
 
 function add(number1, number2) {
     return number1 + number2;

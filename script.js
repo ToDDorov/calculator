@@ -74,7 +74,6 @@ buttons.forEach(button => button.addEventListener('click', (e) => {
 }));
 
 function updateScreen(text) {
-    console.log("UPDATE SCREEN WITH TEXT", text);
     const screen = document.getElementById("screen");
 
     screen.textContent = text;

@@ -1,20 +1,83 @@
-let currentScreenValue = "";
+let currentScreenValue = "0";
+let firstNumber = null;
+let secondNumber = null;
+let operator = "";
 
 const buttons = Array.from(document.querySelectorAll("th"));
 buttons.forEach(button => button.addEventListener('click', (e) => {
     let textContent = e.target.textContent;
 
-    if (e.target.id != "screen" && parseInt(textContent) < 10 && parseInt(textContent) > -1) {
-        currentScreenValue += textContent;
+    if (e.target.id != "screen" && e.target.id != "reset") {
+        if (parseInt(textContent) < 10 && parseInt(textContent) > -1) {
+            if (currentScreenValue == "0" && !currentScreenValue.includes(".")) {
+                currentScreenValue = textContent;
+            } else {
+                currentScreenValue += textContent;
+            }
 
-        this.updateScreen();
+            this.updateScreen(currentScreenValue);
+        } else {
+            if (textContent == "=") {
+                if (firstNumber == null) {
+                    return;
+                }
+
+                secondNumber = parseFloat(currentScreenValue);
+
+                let result = this.operate(operator, firstNumber, secondNumber);
+
+                this.updateScreen(result);
+            } else if (textContent == ".") {
+                if (currentScreenValue.includes(".")) {
+                    return;
+                }
+
+                currentScreenValue += textContent;
+
+                this.updateScreen(currentScreenValue);
+            } else {
+                if (currentScreenValue == "0" && textContent == "/") {
+                    this.updateScreen("Division with 0? Do you want to split the universe??");
+
+                    return;
+                }
+
+                if (operator.length == 0) {
+                    firstNumber = parseFloat(currentScreenValue);
+
+                    operator = textContent;
+
+                    currentScreenValue = "";
+                } else {
+                    secondNumber = parseFloat(currentScreenValue);
+
+                    let tmp = this.operate(operator, firstNumber, secondNumber);
+
+                    this.updateScreen(tmp);
+
+                    firstNumber = tmp;
+                    secondNumber = 0;
+
+                    operator = textContent;
+                    currentScreenValue = "";
+                }
+            }
+        }
+    } else if (e.target.id == "reset") {
+        currentScreenValue = "";
+        firstNumber = null;
+        secondNumber = null;
+        operator = "";
+
+        this.updateScreen("0");
     }
 }));
 
-function updateScreen() {
+function updateScreen(text) {
+    console.log("UPDATE SCREEN WITH TEXT", text);
     const screen = document.getElementById("screen");
 
-    screen.textContent = currentScreenValue;
+    screen.textContent = text;
 }
 
 function add(number1, number2) {
@@ -31,25 +94,41 @@ function multiply(number1, number2) {
 
 function divide(number1, number2) {
     if (number1 == 0 || number2 == 0) {
-        console.warn("Dividing with 0");
-
-        return null;
+        return 0;
     }
 
     return number1 / number2;
 }
 
+/**
+ * @function operate
+ * @param operator
+ * @param number1
+ * @param number2
+ * @returns {number}
+ */
+
 function operate(operator, number1, number2) {
+    let result = 0;
+
     switch (operator) {
         case "+":
-            return add(number1, number2);
+            result = add(number1, number2);
+            break;
         case "-":
-            return subtract(number1, number2);
+            result = subtract(number1, number2);
+            break;
         case "*":
-            return multiply(number1, number2);
+            result = multiply(number1, number2);
+            break;
         case "/":
-            return divide(number1, number2);
+            result = divide(number1, number2);
+            break;
         default:
-            return "No such operator";
+            console.warn("No such operator");
     }
+
+    result = Math.round((result + Number.EPSILON) * 100) / 100;
+
+    return result;
 }

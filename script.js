@@ -8,7 +8,11 @@ const buttons = Array.from(document.querySelectorAll("th"));
 buttons.forEach(button => button.addEventListener('click', (e) => {
     let textContent = e.target.textContent;
 
-    if (e.target.id != "screen" && e.target.id != "reset" && e.target.id != "backspace") {
+    this.onCalculatorUpdate(e.target.id, textContent);
+}));
+
+function onCalculatorUpdate(id, textContent) {
+    if (id != "screen" && id != "reset" && id != "backspace" && id != "Backspace") {
         if (parseInt(textContent) < 10 && parseInt(textContent) > -1) {
             if (currentScreenValue.length >= maxSymbols) {
                 return;
@@ -22,14 +26,12 @@ buttons.forEach(button => button.addEventListener('click', (e) => {
 
             this.updateScreen(currentScreenValue);
         } else {
-            if (textContent == "=") {
+            if (textContent == "=" || id == "Enter") {
                 if (firstNumber == null) {
                     return;
                 }
 
                 secondNumber = parseFloat(currentScreenValue);
-
-                console.log(operator, firstNumber, secondNumber);
 
                 let result = this.operate(operator, firstNumber, secondNumber);
 
@@ -70,14 +72,14 @@ buttons.forEach(button => button.addEventListener('click', (e) => {
                 }
             }
         }
-    } else if (e.target.id == "reset") {
+    } else if (id == "reset") {
         currentScreenValue = "0";
         firstNumber = null;
         secondNumber = null;
         operator = "";
 
         this.updateScreen("0");
-    } else if (e.target.id == "backspace") {
+    } else if (id == "backspace" || id == "Backspace") {
         if (currentScreenValue.length == 1) {
             if (currentScreenValue != "0") {
                 currentScreenValue = "0";
@@ -94,7 +96,7 @@ buttons.forEach(button => button.addEventListener('click', (e) => {
 
         this.updateScreen(currentScreenValue);
     }
-}));
+}
 
 function updateScreen(value) {
     const screen = document.getElementById("screen");
@@ -158,3 +160,7 @@ function operate(operator, number1, number2) {
 
     return result;
 }
+
+window.addEventListener('keydown', (e) => {
+    this.onCalculatorUpdate(e.key, e.key);
+});

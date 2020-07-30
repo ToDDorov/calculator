@@ -6,7 +6,7 @@ html {
 }
 
 .container {
-    margin: 15vh auto;
+    margin: 10vh auto;
     display: table;
 }
 
@@ -53,8 +53,6 @@ th:active {
 
 #screen {
     padding-right: 10px;
-    width: 80%;
-    height: 20%;
     text-align: right;
     background: rgba(0, 0, 0, 0.4);
     pointer-events: none;

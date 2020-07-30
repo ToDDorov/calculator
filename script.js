@@ -1,4 +1,4 @@
-const maxSymbols = 10;
+const maxSymbols = 15;
 let currentScreenValue = "0";
 let firstNumber = null;
 let secondNumber = null;
@@ -8,7 +8,7 @@ const buttons = Array.from(document.querySelectorAll("th"));
 buttons.forEach(button => button.addEventListener('click', (e) => {
     let textContent = e.target.textContent;
 
-    if (e.target.id != "screen" && e.target.id != "reset") {
+    if (e.target.id != "screen" && e.target.id != "reset" && e.target.id != "backspace") {
         if (parseInt(textContent) < 10 && parseInt(textContent) > -1) {
             if (currentScreenValue.length >= maxSymbols) {
                 return;
@@ -28,6 +28,8 @@ buttons.forEach(button => button.addEventListener('click', (e) => {
                 }
 
                 secondNumber = parseFloat(currentScreenValue);
+
+                console.log(operator, firstNumber, secondNumber);
 
                 let result = this.operate(operator, firstNumber, secondNumber);
 
@@ -75,14 +77,30 @@ buttons.forEach(button => button.addEventListener('click', (e) => {
         operator = "";
 
         this.updateScreen("0");
+    } else if (e.target.id == "backspace") {
+        if (currentScreenValue.length == 1) {
+            if (currentScreenValue != "0") {
+                currentScreenValue = "0";
+
+                this.updateScreen(currentScreenValue);
+
+                return;
+            } else {
+                return;
+            }
+        }
+
+        currentScreenValue = currentScreenValue.slice(0, -1);
+
+        this.updateScreen(currentScreenValue);
     }
 }));
 
 function updateScreen(value) {
     const screen = document.getElementById("screen");
 
-    if (typeof value == "number") {
-        value = value.toExponential(5);
+    if (typeof value == "number" && value != 0 && value.toString().length >= maxSymbols) {
+        value = value.toExponential(10);
     }
 
     screen.textContent = value;

@@ -1,3 +1,4 @@
+const maxSymbols = 10;
 let currentScreenValue = "0";
 let firstNumber = null;
 let secondNumber = null;
@@ -9,6 +10,10 @@ buttons.forEach(button => button.addEventListener('click', (e) => {
 
     if (e.target.id != "screen" && e.target.id != "reset") {
         if (parseInt(textContent) < 10 && parseInt(textContent) > -1) {
+            if (currentScreenValue.length >= maxSymbols) {
+                return;
+            }
+
             if (currentScreenValue == "0" && !currentScreenValue.includes(".")) {
                 currentScreenValue = textContent;
             } else {
@@ -47,7 +52,7 @@ buttons.forEach(button => button.addEventListener('click', (e) => {
 
                     operator = textContent;
 
-                    currentScreenValue = "";
+                    currentScreenValue = "0";
                 } else {
                     secondNumber = parseFloat(currentScreenValue);
 
@@ -59,12 +64,12 @@ buttons.forEach(button => button.addEventListener('click', (e) => {
                     secondNumber = 0;
 
                     operator = textContent;
-                    currentScreenValue = "";
+                    currentScreenValue = "0";
                 }
             }
         }
     } else if (e.target.id == "reset") {
-        currentScreenValue = "";
+        currentScreenValue = "0";
         firstNumber = null;
         secondNumber = null;
         operator = "";
@@ -73,10 +78,14 @@ buttons.forEach(button => button.addEventListener('click', (e) => {
     }
 }));
 
-function updateScreen(text) {
+function updateScreen(value) {
     const screen = document.getElementById("screen");
 
-    screen.textContent = text;
+    if (typeof value == "number") {
+        value = value.toExponential(5);
+    }
+
+    screen.textContent = value;
 }
 
 function add(number1, number2) {
